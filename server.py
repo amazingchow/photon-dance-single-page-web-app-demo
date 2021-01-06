@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import uuid
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -8,12 +9,7 @@ app.config.from_object(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify('pong')
-
-
+# book inventory
 BOOKS = [
     {
         'id': uuid.uuid4().hex,
@@ -35,6 +31,12 @@ BOOKS = [
     }
 ]
 
+
+@app.route('/ping', methods=['GET'])
+def ping_pong():
+    return jsonify('pong')
+
+
 @app.route('/books', methods=['GET', 'POST'])
 def all_books():
     response_object = {'status': 'success'}
@@ -46,10 +48,11 @@ def all_books():
             'author': post_data.get('author'),
             'read': post_data.get('read')
         })
-        response_object['message'] = 'Book added!'
+        response_object['message'] = 'Book Added!'
     else:
         response_object['books'] = BOOKS
     return jsonify(response_object)
+
 
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
 def single_book(book_id):
@@ -63,11 +66,12 @@ def single_book(book_id):
             'author': post_data.get('author'),
             'read': post_data.get('read')
         })
-        response_object['message'] = 'Book updated!'
+        response_object['message'] = 'Book Updated!'
     if request.method == 'DELETE':
         remove_book(book_id)
-        response_object['message'] = 'Book removed!'
+        response_object['message'] = 'Book Removed!'
     return jsonify(response_object)
+
 
 def remove_book(book_id):
     for book in BOOKS:
